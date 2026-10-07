@@ -1,0 +1,33 @@
+.user-panel {
+    /* All sizing of the user panel is specified in em units, which is relative to the current font size */
+    font-size: 100pt;
+
+    /* Size / Positioning */
+    min-width: 10em;
+    width: max-content;
+    height: 1.8em;
+    padding-left: 1em;
+    align-content: center;
+
+    /* Rounded corners */
+    /* Note: The radius value is intentionally oversized and will be auto-adjusted to half the length of the shortest side */
+    /*       i.e. the final radius will be 50% of the panel height, such that both sides are fully rounded */
+    border-radius: 100em;
+
+    /* Text */
+    color: #FFFFFF;
+    font-weight: bold;
+    text-shadow: 0.05em 0.05em 0.05em rgba(0, 0, 0, 1);
+
+    /* Layered 3D shading */
+    background-color: #5e332d;
+    box-shadow:
+        /* Outer drop shadow: */
+        2px 2px 5px rgba(0, 0, 0, 0.4),
+        
+        /* Inner shadow/highlight effects to simulate a rounded bevel: */
+        inset 0 0      0.04em 0.05em #411b15,
+        inset 0 0.04em 0.04em 0.11em #5C302A,
+        inset 0 0.02em 0.02em 0.10em #99736e,
+        inset 0 0.04em 0.0em  0.16em #3d211c;
+}
