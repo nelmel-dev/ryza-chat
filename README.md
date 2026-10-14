@@ -4,5 +4,9 @@ Creating a Twitch-integrated chat overlay which is stylized after the dialog box
 ## Reference:
 ![Reference screenshot from the Atelier Ryza game](screenshots/reference.png)
 
+## Progress:
+Added decal and glyph outline to the user panel.
+![User panel with glyph outline](screenshots/ryza-0.02-scrreenshot01.png)
+
 ## JSFiddle:
-[sample](https://jsfiddle.net/nelmel_dev/vmwk8yn2/)
+[ryza-chat 0.02](https://jsfiddle.net/nelmel_dev/7Lyw4d0z/)
