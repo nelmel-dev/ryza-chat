@@ -2,6 +2,7 @@
     /* Sizing/Positioning of the panels is specified in em units, which is relative to the current font size */
     font-size: 50pt;
 
+    font-family: Calibri, Arial, sans-serif;
     display: flex;
     flex-direction: column;
     list-style: none;
