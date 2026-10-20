@@ -5,8 +5,10 @@ Creating a Twitch-integrated chat overlay which is stylized after the dialog box
 ![Reference screenshot from the Atelier Ryza game](screenshots/reference.png)
 
 ## Progress:
-Added initial shading to use glyph and switched to Calibri font
-![User panel with shaded glyph](screenshots/ryza-0.03-scrreenshot01.png)
+Restyled the user panel to allow for role-based recoloring
+![User panel with role-based coloring](screenshots/ryza-0.04-scrreenshot01.png)
+![html markup](screenshots/ryza-0.04-scrreenshot02.png)
+![css markup](screenshots/ryza-0.04-scrreenshot03.png)
 
 ## JSFiddle:
-[ryza-chat 0.03](https://jsfiddle.net/nelmel_dev/cnkxtm8y/)
+[ryza-chat 0.04](https://jsfiddle.net/nelmel_dev/mdL6e89z/)

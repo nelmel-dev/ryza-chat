@@ -2,7 +2,6 @@
     /* Sizing/Positioning of the panels is specified in em units, which is relative to the current font size */
     font-size: 50pt;
 
-    font-family: Calibri, Arial, sans-serif;
     display: flex;
     flex-direction: column;
     list-style: none;
@@ -10,16 +9,16 @@
     padding: 0;
 }
 
-.chat-line {
+.chat-entry {
     position: relative;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
 }
 
-.username {
+.user-panel {
     display: block;
 
-    /* Size / Positioning */
+    /* Size / Positioning: */
     margin-left: 0.2em;
     min-width: 5em;
     width: max-content;
@@ -28,41 +27,40 @@
     padding-right: 1em;
     align-content: center;
 
-    /* Rounded corners */
+    /* Rounded corners: */
     /* Note: The radius value is intentionally oversized and will be auto-adjusted to half the length of the shortest side */
     /*       i.e. the final radius will be 50% of the panel height, such that both sides are fully rounded */
     border-radius: 100em;
 
-    /* Text */
-    color: #FFFFFF;
-    font-weight: bold;
-    text-shadow: 0.05em 0.05em 0.05em rgba(0, 0, 0, 1);
-
-    /* Layered 3D shading */
-    background-color: #5e332d;
+    /* Set base color: */
+    /* To recolor the user-panel, the --user-panel-color variable should be overridden in the appropriate role classes */
+    --user-panel-color: #783830;
+    /* user-panel-color-calc further limits the brightness to between 30% and 70%, and max chroma to 0.23 (~57% saturation)  */
+    --user-panel-color-calc: oklch(from var(--user-panel-color) min(max(l, 0.30), 0.70) min(c, 0.23) h);
+    
+    /* Layered 3D shading: */
+    background-color: hsl(from var(--user-panel-color-calc) h s calc(l * 0.80));
     background-image:
         /* decal */      url("../images/user-panel-decal.png"),
-        /* base color */ linear-gradient(to top, #5e332d, #5f3f39 40%, #521f17);
+        /* base color */ linear-gradient(to top, rgb(0 0 0 / 0%), rgb(255 255 255 / 10%) 40%, rgb(0 0 0 / 10%));
     background-position:
         /* decal */      0.15em 0.2em,
-        /* base color */ 0em 0em;
+        /* base color */ 0 0;
     background-size:
         /* decal */      1.4em 1.4em,
         /* base color */ 100% 100%;
-    background-blend-mode:
-        /* decal */      color-burn,
-        /* base color */ normal;
     box-shadow:
         /* Outer drop shadow: */
-        2px 2px 5px rgba(0, 0, 0, 0.4),
+        2px 2px 5px rgb(0 0 0 / 0.4),
         
         /* Inner shadow/highlight effects to simulate a rounded bevel: */
-        inset 0 0      0.04em 0.05em #411b15,
-        inset 0 0.04em 0.04em 0.11em #5C302A,
-        inset 0 0.02em 0.02em 0.10em #99736e,
-        inset 0 0.04em 0.0em  0.16em #3d211c;
+        inset 0 0      0.04em 0.05em rgb(0 0 0 / 50%),
+        inset 0 0.04em 0.04em 0.11em var(--user-panel-color-calc),
+        inset 0 0.02em 0.02em 0.10em rgb(255 255 255 / 50%),
+        inset 0 0.04em 0.0em  0.16em rgb(0 0 0 / 50%);
 }
-.username::before {
+.user-panel::before {
+    /* User glyph: */
     content: "";
     position: absolute;
     background-image: url("../images/user-glyph.svg");
@@ -73,4 +71,16 @@
     bottom: -1em;
     background-repeat: no-repeat;
     pointer-events: none;
+}
+
+.username {
+    /* Text formatting:*/
+    color: #ffffff;
+    font-family: Calibri, Arial, sans-serif;
+    font-weight: bold;
+    text-shadow: 0.05em 0.05em 0.05em rgb(0 0 0 / 100%);
+}
+
+.role-broadcaster .user-panel {
+    --user-panel-color: #ff0000;
 }
