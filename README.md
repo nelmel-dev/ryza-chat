@@ -5,10 +5,10 @@ Creating a Twitch-integrated chat overlay which is stylized after the dialog box
 ![Reference screenshot from the Atelier Ryza game](screenshots/reference.png)
 
 ## Progress:
-Restyled the user panel to allow for role-based recoloring
-![User panel with role-based coloring](screenshots/ryza-0.04-scrreenshot01.png)
-![html markup](screenshots/ryza-0.04-scrreenshot02.png)
-![css markup](screenshots/ryza-0.04-scrreenshot03.png)
+Restyled remaining elements of the user panel to allow for role-based and item-level theming
+![User panel with role-based and item-level theming applied](screenshots/ryza-0.05-scrreenshot01.png)
+![html markup](screenshots/ryza-0.05-scrreenshot02.png)
+![css markup](screenshots/ryza-0.05-scrreenshot03.png)
 
 ## JSFiddle:
-[ryza-chat 0.04](https://jsfiddle.net/nelmel_dev/mdL6e89z/)
+[ryza-chat 0.05](https://jsfiddle.net/nelmel_dev/2hstcg58/)

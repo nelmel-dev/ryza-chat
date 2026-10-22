@@ -10,6 +10,18 @@
 }
 
 .chat-entry {
+    /* Some style rules are applied through a named @container query which checks the current value of CSS variables */
+    /* This requires container-name to be defined on a parent element */
+    container-name: chat-entry-container;
+
+    /* Default values for all themeable items: */
+    /* These can be overridden in the role classes or directly on the individual html elements with the chat-entry class */
+    --user-panel-color: #783830;
+    --user-text-color: #ffffff;
+    --user-glyph-visible: false;
+    --user-glyph-color: #c9a264;
+    --user-glyph-cap-color: var(--user-glyph-color);
+
     position: relative;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
@@ -19,12 +31,14 @@
     display: block;
 
     /* Size / Positioning: */
+    --_user-padding-left: 0.8em;
+    --_user-min-width: 7em;
     margin-left: 0.2em;
-    min-width: 5em;
+    padding-left: var(--_user-padding-left);
+    padding-right: 1em;
+    min-width: var(--_user-min-width);
     width: max-content;
     height: 1.8em;
-    padding-left: 1.8em;
-    padding-right: 1em;
     align-content: center;
 
     /* Rounded corners: */
@@ -33,13 +47,11 @@
     border-radius: 100em;
 
     /* Set base color: */
-    /* To recolor the user-panel, the --user-panel-color variable should be overridden in the appropriate role classes */
-    --user-panel-color: #783830;
-    /* user-panel-color-calc further limits the brightness to between 30% and 70%, and max chroma to 0.23 (~57% saturation)  */
-    --user-panel-color-calc: oklch(from var(--user-panel-color) min(max(l, 0.30), 0.70) min(c, 0.23) h);
+    /* Limit the --user-panel-color brightness to between 30% and 70%, and max chroma to 0.23 (~57% saturation)  */
+    --_user-panel-color-calc: oklch(from var(--user-panel-color) min(max(l, 0.30), 0.70) min(c, 0.23) h);
     
     /* Layered 3D shading: */
-    background-color: hsl(from var(--user-panel-color-calc) h s calc(l * 0.80));
+    background-color: hsl(from var(--_user-panel-color-calc) h s calc(l * 0.80));
     background-image:
         /* decal */      url("../images/user-panel-decal.png"),
         /* base color */ linear-gradient(to top, rgb(0 0 0 / 0%), rgb(255 255 255 / 10%) 40%, rgb(0 0 0 / 10%));
@@ -55,32 +67,115 @@
         
         /* Inner shadow/highlight effects to simulate a rounded bevel: */
         inset 0 0      0.04em 0.05em rgb(0 0 0 / 50%),
-        inset 0 0.04em 0.04em 0.11em var(--user-panel-color-calc),
+        inset 0 0.04em 0.04em 0.11em var(--_user-panel-color-calc),
         inset 0 0.02em 0.02em 0.10em rgb(255 255 255 / 50%),
         inset 0 0.04em 0.0em  0.16em rgb(0 0 0 / 50%);
 }
-.user-panel::before {
-    /* User glyph: */
-    content: "";
-    position: absolute;
-    background-image: url("../images/user-glyph.svg");
-    background-size: 3.55em;
-    top: -0.53em;
-    left: 0;
-    right: 0;
-    bottom: -1em;
-    background-repeat: no-repeat;
-    pointer-events: none;
+/* Custom styling which is applied when --user-glyph-visible: true */
+@container chat-entry-container style(--user-glyph-visible: true) {
+    /* Reposition panel content to make room for the user glyph */
+    .user-panel {
+        /* Size / Positioning overrides: */
+        --_user-glyph-offset: 1em;
+        padding-left: calc(var(--_user-padding-left) + var(--_user-glyph-offset));
+        min-width: calc(var(--_user-min-width) - var(--_user-glyph-offset));
+    
+        /* Shared measurements for sizing/positioning of the below ::before and ::after pseudo-elements: */
+        --_glyph-size: 3.55em;
+        --_glyph-repeat: no-repeat;
+        --_glyph-top: -0.53em;
+        --_glyph-left: 0;
+        --_glyph-right: 0;
+        --_glyph-bottom: -1em;
+    }
+    /* Add user glyph */
+    .user-panel::before {
+        content: "";
+        position: absolute;
+
+        /* Set base color: */
+        /* Limit the --user-glyph-color brightness to between 60% and 90%, and max chroma to 0.15 (~37% saturation)  */
+        --_user-glyph-color-calc: oklch(from var(--user-glyph-color) min(max(l, 0.60), 0.90) min(c, 0.15) h);
+
+        background-image:
+            /* user glyph shading */ url("../images/user-glyph-shading.svg"),
+            /* user glyph color */   linear-gradient(var(--_user-glyph-color-calc));
+        -webkit-mask:
+            /* user glyph shading */ none,
+            /* user glyph color */   url("../images/user-glyph-base.svg");
+        mask:
+            /* user glyph shading */ none,
+            /* user glyph color */   url("../images/user-glyph-base.svg");
+        background-size: var(--_glyph-size);
+        -webkit-mask-size: var(--_glyph-size);
+        mask-size: var(--_glyph-size);
+        background-repeat: var(--_glyph-repeat);
+        -webkit-mask-repeat: var(--_glyph-repeat);
+        mask-repeat: var(--_glyph-repeat);
+        
+        top: var(--_glyph-top);
+        left: var(--_glyph-left);
+        right: var(--_glyph-right);
+        bottom: var(--_glyph-bottom);
+        pointer-events: none;
+    }
+    /* Add user glyph cap */
+    .user-panel::after {
+        content: "";
+        position: absolute;
+
+        /* Set base color: */
+        /* Limit the --user-glyph-cap-color brightness to between 60% and 90%, and max chroma to 0.15 (~37% saturation)  */
+        --_user-glyph-cap-color-calc: oklch(from var(--user-glyph-cap-color) min(max(l, 0.60), 0.90) min(c, 0.15) h);
+
+        background-image:
+            /* user glyph cap shading */ url("../images/user-glyph-cap-shading.svg"),
+            /* user glyph cap color */   linear-gradient(var(--_user-glyph-cap-color-calc));
+        -webkit-mask:
+            /* user glyph cap shading */ none,
+            /* user glyph cap color */   url("../images/user-glyph-cap-base.svg");
+        mask:
+            /* user glyph cap shading */ none,
+            /* user glyph cap color */   url("../images/user-glyph-cap-base.svg");
+        background-size: var(--_glyph-size);
+        -webkit-mask-size: var(--_glyph-size);
+        mask-size: var(--_glyph-size);
+        background-repeat: var(--_glyph-repeat);
+        -webkit-mask-repeat: var(--_glyph-repeat);
+        mask-repeat: var(--_glyph-repeat);
+        
+        top: var(--_glyph-top);
+        left: var(--_glyph-left);
+        right: var(--_glyph-right);
+        bottom: var(--_glyph-bottom);
+        pointer-events: none;
+    }
 }
 
 .username {
+    /* Set base color: */
+    /* Limit the --user-text-color min brightness to 80%, and max chroma to 0.15 (~37% saturation)  */
+    --_user-text-color-calc: oklch(from var(--user-text-color) max(l, 0.80) min(c, 0.15) h);
+
     /* Text formatting:*/
-    color: #ffffff;
+    color: var(--_user-text-color-calc);
     font-family: Calibri, Arial, sans-serif;
     font-weight: bold;
+    letter-spacing: 0.08em;
     text-shadow: 0.05em 0.05em 0.05em rgb(0 0 0 / 100%);
 }
 
-.role-broadcaster .user-panel {
+.chat-entry.role-broadcaster {
+    /* Theme oveerrides for the broadcaster role: */
     --user-panel-color: #ff0000;
+    --user-text-color: #ffffbb;
+    --user-glyph-visible: true;
+    --user-glyph-color: #ffffbb;
+    --user-glyph-cap-color: #ffffff;
+}
+
+.chat-entry.role-moderator {
+    /* Theme oveerrides for the moderator role: */
+    --user-glyph-visible: true;
+    --user-glyph-color: #00ff00;
 }
