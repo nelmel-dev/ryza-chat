@@ -1,6 +1,6 @@
 .twitch-chat {
     /* Sizing/Positioning of the panels is specified in em units, which is relative to the current font size */
-    font-size: 50pt;
+    font-size: 16pt;
 
     display: flex;
     flex-direction: column;
@@ -10,10 +10,6 @@
 }
 
 .chat-entry {
-    /* Some style rules are applied through a named @container query which checks the current value of CSS variables */
-    /* This requires container-name to be defined on a parent element */
-    container-name: chat-entry-container;
-
     /* Default values for all themeable items: */
     /* These can be overridden in the role classes or directly on the individual html elements with the chat-entry class */
     --user-panel-color: #783830;
@@ -21,16 +17,23 @@
     --user-glyph-visible: false;
     --user-glyph-color: #c9a264;
     --user-glyph-cap-color: var(--user-glyph-color);
+    --message-panel-color: #d4ceac;
 
     position: relative;
     margin-top: 0.5em;
     margin-bottom: 0.5em;
+    margin-left: 0.2em;
+
+    -webkit-filter: drop-shadow(2px 2px 2px rgb(0 0 0 / 40%));
+    filter: drop-shadow(2px 2px 2px rgb(0 0 0 / 40%));
 }
 
-.user-panel {
+.chat-entry .user-panel {
     display: block;
+    position: relative;
+    z-index: 2;
 
-    /* Size / Positioning: */
+    /* Panel size / positioning: */
     --_user-padding-left: 0.8em;
     --_user-min-width: 7em;
     margin-left: 0.2em;
@@ -46,14 +49,14 @@
     /*       i.e. the final radius will be 50% of the panel height, such that both sides are fully rounded */
     border-radius: 100em;
 
-    /* Set base color: */
+    /* Set panel color: */
     /* Limit the --user-panel-color brightness to between 30% and 70%, and max chroma to 0.23 (~57% saturation)  */
     --_user-panel-color-calc: oklch(from var(--user-panel-color) min(max(l, 0.30), 0.70) min(c, 0.23) h);
     
     /* Layered 3D shading: */
     background-color: hsl(from var(--_user-panel-color-calc) h s calc(l * 0.80));
     background-image:
-        /* decal */      url("../images/user-panel-decal.png"),
+        /* decal */      url("../images/hatch-decal.png"),
         /* base color */ linear-gradient(to top, rgb(0 0 0 / 0%), rgb(255 255 255 / 10%) 40%, rgb(0 0 0 / 10%));
     background-position:
         /* decal */      0.15em 0.2em,
@@ -63,7 +66,7 @@
         /* base color */ 100% 100%;
     box-shadow:
         /* Outer drop shadow: */
-        2px 2px 5px rgb(0 0 0 / 0.4),
+        2px 2px 5px rgb(0 0 0 / 40%),
         
         /* Inner shadow/highlight effects to simulate a rounded bevel: */
         inset 0 0      0.04em 0.05em rgb(0 0 0 / 50%),
@@ -72,10 +75,10 @@
         inset 0 0.04em 0.0em  0.16em rgb(0 0 0 / 50%);
 }
 /* Custom styling which is applied when --user-glyph-visible: true */
-@container chat-entry-container style(--user-glyph-visible: true) {
+@container style(--user-glyph-visible: true) {
     /* Reposition panel content to make room for the user glyph */
-    .user-panel {
-        /* Size / Positioning overrides: */
+    .chat-entry .user-panel {
+        /* Panel overrides for size / positioning: */
         --_user-glyph-offset: 1em;
         padding-left: calc(var(--_user-padding-left) + var(--_user-glyph-offset));
         min-width: calc(var(--_user-min-width) - var(--_user-glyph-offset));
@@ -89,80 +92,220 @@
         --_glyph-bottom: -1em;
     }
     /* Add user glyph */
-    .user-panel::before {
+    .chat-entry .user-panel::before {
         content: "";
         position: absolute;
+        z-index: 3;
 
-        /* Set base color: */
+        /* Glyph positioning: */
+        top: var(--_glyph-top);
+        left: var(--_glyph-left);
+        right: var(--_glyph-right);
+        bottom: var(--_glyph-bottom);
+
+        /* Set glyph color: */
         /* Limit the --user-glyph-color brightness to between 60% and 90%, and max chroma to 0.15 (~37% saturation)  */
         --_user-glyph-color-calc: oklch(from var(--user-glyph-color) min(max(l, 0.60), 0.90) min(c, 0.15) h);
 
+        /* Glyph mask: */
+        -webkit-mask:  url("../images/user-glyph-base.svg");
+        mask: url("../images/user-glyph-base.svg");
+        -webkit-mask-size: var(--_glyph-size);
+        mask-size: var(--_glyph-size);
+        -webkit-mask-repeat: var(--_glyph-repeat);
+        mask-repeat: var(--_glyph-repeat);
+
+        /* Glyph shading: */
         background-image:
             /* user glyph shading */ url("../images/user-glyph-shading.svg"),
             /* user glyph color */   linear-gradient(var(--_user-glyph-color-calc));
-        -webkit-mask:
-            /* user glyph shading */ none,
-            /* user glyph color */   url("../images/user-glyph-base.svg");
-        mask:
-            /* user glyph shading */ none,
-            /* user glyph color */   url("../images/user-glyph-base.svg");
         background-size: var(--_glyph-size);
-        -webkit-mask-size: var(--_glyph-size);
-        mask-size: var(--_glyph-size);
         background-repeat: var(--_glyph-repeat);
-        -webkit-mask-repeat: var(--_glyph-repeat);
-        mask-repeat: var(--_glyph-repeat);
         
-        top: var(--_glyph-top);
-        left: var(--_glyph-left);
-        right: var(--_glyph-right);
-        bottom: var(--_glyph-bottom);
         pointer-events: none;
     }
     /* Add user glyph cap */
-    .user-panel::after {
+    .chat-entry .user-panel::after {
         content: "";
         position: absolute;
+        z-index: 3;
 
-        /* Set base color: */
-        /* Limit the --user-glyph-cap-color brightness to between 60% and 90%, and max chroma to 0.15 (~37% saturation)  */
-        --_user-glyph-cap-color-calc: oklch(from var(--user-glyph-cap-color) min(max(l, 0.60), 0.90) min(c, 0.15) h);
-
-        background-image:
-            /* user glyph cap shading */ url("../images/user-glyph-cap-shading.svg"),
-            /* user glyph cap color */   linear-gradient(var(--_user-glyph-cap-color-calc));
-        -webkit-mask:
-            /* user glyph cap shading */ none,
-            /* user glyph cap color */   url("../images/user-glyph-cap-base.svg");
-        mask:
-            /* user glyph cap shading */ none,
-            /* user glyph cap color */   url("../images/user-glyph-cap-base.svg");
-        background-size: var(--_glyph-size);
-        -webkit-mask-size: var(--_glyph-size);
-        mask-size: var(--_glyph-size);
-        background-repeat: var(--_glyph-repeat);
-        -webkit-mask-repeat: var(--_glyph-repeat);
-        mask-repeat: var(--_glyph-repeat);
-        
+        /* Glyph positioning: */
         top: var(--_glyph-top);
         left: var(--_glyph-left);
         right: var(--_glyph-right);
         bottom: var(--_glyph-bottom);
+
+        /* Set glyph cap color: */
+        /* Limit the --user-glyph-cap-color brightness to between 60% and 90%, and max chroma to 0.15 (~37% saturation)  */
+        --_user-glyph-cap-color-calc: oklch(from var(--user-glyph-cap-color) min(max(l, 0.60), 0.90) min(c, 0.15) h);
+
+        /* Glyph mask: */
+        -webkit-mask: url("../images/user-glyph-cap-base.svg");
+        mask: url("../images/user-glyph-cap-base.svg");
+        -webkit-mask-size: var(--_glyph-size);
+        mask-size: var(--_glyph-size);
+        -webkit-mask-repeat: var(--_glyph-repeat);
+        mask-repeat: var(--_glyph-repeat);
+
+        /* Glyph shading: */
+        background-image:
+            /* user glyph cap shading */ url("../images/user-glyph-cap-shading.svg"),
+            /* user glyph cap color */   linear-gradient(var(--_user-glyph-cap-color-calc));
+        background-size: var(--_glyph-size);
+        background-repeat: var(--_glyph-repeat);
+        
         pointer-events: none;
     }
 }
 
-.username {
-    /* Set base color: */
+.chat-entry .username {
+    /* Set text color: */
     /* Limit the --user-text-color min brightness to 80%, and max chroma to 0.15 (~37% saturation)  */
     --_user-text-color-calc: oklch(from var(--user-text-color) max(l, 0.80) min(c, 0.15) h);
 
-    /* Text formatting:*/
+    /* Text formatting: */
     color: var(--_user-text-color-calc);
     font-family: Calibri, Arial, sans-serif;
     font-weight: bold;
     letter-spacing: 0.08em;
     text-shadow: 0.05em 0.05em 0.05em rgb(0 0 0 / 100%);
+}
+
+.chat-entry .message-panel {
+    display: block;
+    position: relative;
+    z-index: 1;
+
+    /* Panel size / positioning: */
+    /* Note: The top/bottom padding for this panel is instead specified as a transparent border so that the */
+    /*       repeat-y masks can be properly clipped */
+    margin-top: -1em;
+    margin-left: 1em;
+    border-top: 1.2em solid transparent;
+    padding-left: 1em;
+    padding-right: 1em;
+    border-bottom: 0.3em solid transparent;
+    min-width: 10em;
+
+    /* Set panel color: */
+    /* Limit the --message-panel-color min brightness to 80%, and max chroma to 0.08 (~20% saturation)  */
+    --_message-panel-color-calc: oklch(from var(--message-panel-color) max(l, 0.80) min(c, 0.08) h);
+
+    /* Mask SVGs: */
+    /* Note: By default, SVGs are scaled proportionally even when using disproportionate CSS sizing rules */
+    /*       A preserveAspectRatio="none" attribute must be added to the <svg> node of the image */
+    /*       to allow it to fully stretch in both directions */
+    /*       https://stackoverflow.com/questions/68477841/mask-size-100-100-does-not-stretch-horizontally */
+    -webkit-mask:
+        /* top edge */    url("../images/message-panel-mask-top.svg"),
+        /* left edge */   url("../images/message-panel-mask-left.svg"),
+        /* center */      url("../images/message-panel-mask-center.svg"),
+        /* right edge */  url("../images/message-panel-mask-right.svg"),
+        /* bottom edge */ url("../images/message-panel-mask-bottom.svg");
+    mask:
+        /* top edge */    url("../images/message-panel-mask-top.svg"),
+        /* left edge */   url("../images/message-panel-mask-left.svg"),
+        /* center */      url("../images/message-panel-mask-center.svg"),
+        /* right edge */  url("../images/message-panel-mask-right.svg"),
+        /* bottom edge */ url("../images/message-panel-mask-bottom.svg");
+
+    /* Mask size / positioning: */
+    /* LAYOUT *************************************************************************************
+           1em┊                                       *                                   ┊1em
+           ╔═════════════════════════════════════════════════════════════════════════════════╗
+     1.2em ║                                  top edge (scale-x)                             ║
+     ----- ╟──┬───────────────────────────────────────────────────────────────────────────┬──╢
+           ║  ⇦ left edge (repeat-y)                               right edge (repeat-y) ⇨  ║
+         * ║  │                              ▷ center (fill) ◁                           │  ║
+           ║  │                                                                           │  ║
+     ----- ╟──┴───────────────────────────⇩ bottom edge (scale-x) ⇩───────────────────────┴──╢
+     0.3em ╚═════════════════════════════════════════════════════════════════════════════════╝
+    **********************************************************************************************/
+    --_top: 1.2em;  /* height of top mask */
+    --_left: 1em;  /* width of left mask */
+    --_right: 1em;  /* width of right mask */
+    --_bottom: 0.3em;  /* height of bottom mask */
+    --_y-repeat: 8em;  /* repeat height of left/right masks */
+    --_overbleed: 1px;  /* safety overlap to prevent mask gaps during final browser rendering */
+    -webkit-mask-position:
+        /* top edge */    0                   0,
+        /* left edge */   0                   calc(var(--_top) - var(--_overbleed)),
+        /* center */      calc(var(--_left))  calc(var(--_top) - var(--_overbleed)),
+        /* right edge */  100%                calc(var(--_top) - var(--_overbleed)),
+        /* bottom edge */ 0                   100%;
+    mask-position:
+        /* top edge */    0                   0,
+        /* left edge */   0                   calc(var(--_top) - var(--_overbleed)),
+        /* center */      calc(var(--_left))  calc(var(--_top) - var(--_overbleed)),
+        /* right edge */  100%                calc(var(--_top) - var(--_overbleed)),
+        /* bottom edge */ 0                   100%;
+    -webkit-mask-size:
+        /* top edge */    100%                                       var(--_top),
+        /* left edge */   calc(var(--_left) + var(--_overbleed))     var(--_y-repeat),
+        /* center */      calc(100% - var(--_left) - var(--_right))  calc(100% - var(--_top) - var(--_bottom) + 2*var(--_overbleed)),
+        /* right edge */  calc(var(--_right) + var(--_overbleed))    var(--_y-repeat),
+        /* bottom edge */ 100%                                       var(--_bottom);
+    mask-size:
+        /* top edge */    100%                                       var(--_top),
+        /* left edge */   calc(var(--_left) + var(--_overbleed))     var(--_y-repeat),
+        /* center */      calc(100% - var(--_left) - var(--_right))  calc(100% - var(--_top) - var(--_bottom) + 2*var(--_overbleed)),
+        /* right edge */  calc(var(--_right) + var(--_overbleed))    var(--_y-repeat),
+        /* bottom edge */ 100%                                       var(--_bottom);
+    -webkit-mask-repeat:
+        /* top edge */    no-repeat,
+        /* left edge */   repeat-y,
+        /* center */      no-repeat,
+        /* right edge */  repeat-y,
+        /* bottom edge */ no-repeat;
+    mask-repeat:
+        /* top edge */    no-repeat,
+        /* left edge */   repeat-y,
+        /* center */      no-repeat,
+        /* right edge */  repeat-y,
+        /* bottom edge */ no-repeat;
+    mask-clip:
+        /* top edge */    border-box,
+        /* left edge */   padding-box,
+        /* center */      padding-box,
+        /* right edge */  padding-box,
+        /* bottom edge */ border-box;
+
+    /* Background layers: */
+    background-color: var(--_message-panel-color-calc);
+    background-image:
+        /* paper decal */      url("../images/paper-decal.png"),
+        /* hatch fade (top) */ linear-gradient(to bottom, var(--_message-panel-color-calc), transparent),
+        /* hatch fade (all) */ linear-gradient(hsl(from var(--_message-panel-color-calc) h s l / 70%)),
+        /* hatch decal */      url("../images/hatch-decal.png");
+    background-position:
+        /* paper decal */      0 0,
+        /* hatch fade (top) */ 0 -1.2em,
+        /* hatch fade (all) */ 0 0,
+        /* hatch decal */      0 0;
+    background-size:
+        /* paper decal */      5em,
+        /* hatch fade (top) */ 100% 3em,
+        /* hatch fade (all) */ 100% 100%,
+        /* hatch decal */      3em;
+    background-repeat:
+        /* paper decal */      repeat,
+        /* hatch fade (top) */ no-repeat,
+        /* hatch fade (all) */ repeat,
+        /* hatch decal */      repeat;
+
+    opacity: 90%;
+}
+
+.chat-entry .message-text {
+    /* Set text color: */
+    /* Limit the --message-text-color max brightness to 20%, and max chroma to 0.08 (~20% saturation)  */
+    --_message-text-color-calc: oklch(from var(--message-panel-color) min(l, 0.20) min(c, 0.08) h);
+
+    /* Text formatting: */
+    color: var(--_message-text-color-calc);
+    font-family: Calibri, Arial, sans-serif;
+    font-weight: normal;
 }
 
 .chat-entry.role-broadcaster {
@@ -177,5 +320,6 @@
 .chat-entry.role-moderator {
     /* Theme oveerrides for the moderator role: */
     --user-glyph-visible: true;
-    --user-glyph-color: #00ff00;
+    --user-glyph-color: #00dd00;
+    --message-panel-color: #00ff00;
 }

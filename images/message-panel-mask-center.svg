@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg width="100%" height="100%" viewBox="0 0 3279 1385" preserveAspectRatio="none" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xml:space="preserve" xmlns:affinity="https://www.affinity.studio/" style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;">
+    <g transform="matrix(3.125,0,0,3.125,-159.375,-2575)">
+        <g id="Message-Panel" affinity:id="Message Panel" transform="matrix(0.919329,0,0,1.812815,0,1372.603212)">
+            <rect x="0" y="-328" width="1252" height="278" style="fill:none;"/>
+            <g id="Panel-Center" affinity:id="Panel Center" transform="matrix(2.210048,0,0,0.801409,-395.43703,-1009.049786)">
+                <rect x="203.536" y="880.791" width="517.285" height="306.304" style="fill:rgb(212,206,172);"/>
+            </g>
+        </g>
+    </g>
+</svg>
